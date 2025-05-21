@@ -1,1 +1,52 @@
-game.Lighting.Brightness = 3000
+--// Services
+local Lighting = game:GetService("Lighting")
+local StarterGui = game:GetService("StarterGui")
+
+--// UI Setup
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FullBrightToggleUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0, 140, 0, 40)
+ToggleButton.Position = UDim2.new(0, 20, 0, 80)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Font = Enum.Font.Gotham
+ToggleButton.TextSize = 16
+ToggleButton.Text = "Enable Full Bright"
+ToggleButton.Parent = ScreenGui
+ToggleButton.BorderSizePixel = 0
+ToggleButton.AutoButtonColor = true
+ToggleButton.BackgroundTransparency = 0.1
+
+local fullBrightOn = false
+local originalSettings = {
+	Brightness = Lighting.Brightness,
+	ExposureCompensation = Lighting.ExposureCompensation,
+	Ambient = Lighting.Ambient,
+	OutdoorAmbient = Lighting.OutdoorAmbient,
+	FogEnd = Lighting.FogEnd,
+	ClockTime = Lighting.ClockTime
+}
+
+--// Toggle Function
+ToggleButton.MouseButton1Click:Connect(function()
+	fullBrightOn = not fullBrightOn
+
+	if fullBrightOn then
+		ToggleButton.Text = "Disable Full Bright"
+		Lighting.Brightness = 2
+		Lighting.ExposureCompensation = 0.5
+		Lighting.ClockTime = 0
+		Lighting.FogEnd = 100000
+		Lighting.Ambient = Color3.fromRGB(150, 150, 150)
+		Lighting.OutdoorAmbient = Color3.fromRGB(100, 100, 100)
+	else
+		ToggleButton.Text = "Enable Full Bright"
+		for setting, value in pairs(originalSettings) do
+			Lighting[setting] = value
+		end
+	end
+end)
